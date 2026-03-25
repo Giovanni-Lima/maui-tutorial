@@ -1,18 +1,16 @@
-## Navigation
+## Hands-on Lab Part 3: 增加巡覽功能
 
-In Part 3 we will add simple navigation to push a new page onto the stack to display details about the monkey.
+在此 Hands-on Lab Part 3 中，將增加簡單的巡覽功能來進行頁面的轉跳，而呈現的新頁面將用來呈現猴子的完整詳細資訊。
 
-This module is also available in [Chinese (Simplified)](README.zh-cn.md) & [Chinese (Traditional)](README.zh-tw.md).
+而在這邊將使用 .NET MAUI 的內建的 Shell 進行巡覽，透過基於 URI 模式的巡覽系統，能夠更簡易的完成頁面轉跳，並且可以透過 QueryString 的方式來傳遞參數（例如: 字串或物件...等資料）到新頁面當中。
 
-We will use the built-in Shell navigation of .NET MAUI. This powerful navigation system is based on URIs. You can pass additional information while navigating query parameter such as a string, or a full object.
-
-For example, let's say we wanted to navigate to a details page and pass in an identifier. 
+例如，假設我們想要巡覽到新頁面呈現猴子的詳細資訊時，可以在 URI 直接帶入一個 QueryString 的字串值。
 
 ```csharp
 await Shell.Current.GoToAsync("DetailsPage?name=james");
 ```
 
-Then in our details page or view model we should define this property:
+接著在呈現猴子的詳細資訊頁面 (Page) 或是其對應的 ViewModel 設計當中，可以在其類別掛上 `[QueryProperty]` 並設計其對應的属性動作 (其下以 Page 的類別設計為例)：
 
 ```csharp
 [QueryProperty(nameof(Name), "name")]
@@ -27,7 +25,7 @@ public partial class DetailsPage : ContentPage
 }
 ```
 
-When we navigate, the name "james" would be passed along automatically. We can also pass a full object as well using the same mechanism:
+在進行頁面轉跳時，QueryString 的值 `james` 將會自動傳遞到 `DetailPage` 所設計的 `Name` 屬性當中。也可以使用類似的手法(呼叫 'GoToAsync()' 方法的多載)來傳遞一個完整的物件資料：
 
 ```csharp
 var person = new Person { Name="James" };
@@ -37,7 +35,7 @@ await Shell.Current.GoToAsync("DetailsPage", new Dictionary<string, object>
 });
 ```
 
-Then on our page or view model we would create the property.
+接著在轉跳到的詳細資訊頁面 (Page) 或是其對應的 ViewModel 設計當中，可以在其類別掛上 `[QueryProperty]` 並設計其對應的屬性動作 (其下以 Page 的類別設計為例)：
 
 ```csharp
 [QueryProperty(nameof(Person), "person")]
@@ -52,16 +50,15 @@ public partial class DetailsPage : ContentPage
 }
 ```
 
-Here, the `Person` is automatically serialized and deserialized for us when we navigate.
+當進行頁面轉跳時 `Person` 物件將會自動的序列化或反序列化來傳遞資料。
 
-Now, let's add a click handler to the collection view and pass the monkey to the details page.
+接著透過 ViewModel 來增加一個點選後會透過巡覽轉跳到詳細頁面並傳遞猴子資料的處理。
 
-### Add Selected Event
+### 增加點選動作的處理
 
-Now, let's add navigation to a second page that displays monkey details!
+準備透過 `Shell` 所設計的 `GoToAsync()` 方法轉跳到呈現猴子的詳細訊息頁面！
 
-1. In `MonkeysViewModel.cs`, create a method `async Task GoToDetailsAsync(Monkey monkey)` exposed as an `[RelayCommand]`:
-
+1. 在 `MonkeysViewModel.cs` 當中，建立一個 `async Task GoToDetailsAsync(Monkey monkey)` 的方法，並透過 `[RelayCommand]` 的掛載，形成可公開的操作 `Command`：
 
     ```csharp
     [RelayCommand]
@@ -77,11 +74,11 @@ Now, let's add navigation to a second page that displays monkey details!
     }
     ```
 
-    - This code checks to see if the selected item is non-null and then uses the built in Shell `Navigation` API to push a new page with the monkey as a parameter and then deselects the item. 
+    - 此方法中一開始先檢查參數所得到的資料是否為空值，若不是空值才透過 Shell 內建用以 `Navigation` 的 `GoToAsync()` 方法，並將帶入的猴子資料為呼叫方法的引數資料，來轉跳進入詳細頁面。
 
-1. In `MainPage.xaml` we can add an `TapGestureRecognizer` event to the `Border` of our monkey inside of the `CollectionView.ItemTemplate`:
+2. 在 `MainPage.xaml` 當中，找到 `CollectionView.ItemTemplate` 有關設置 `Border` 的部分，並增加中 `TapGestureRecognizer` 的事件：
 
-    Before:
+    增加前:  
 
     ```xml
     <CollectionView.ItemTemplate>
@@ -108,7 +105,8 @@ Now, let's add navigation to a second page that displays monkey details!
     </CollectionView.ItemTemplate>
     ```
 
-    After:
+    增加後:  
+    
     ```xml
     <CollectionView.ItemTemplate>
         <DataTemplate x:DataType="model:Monkey">
@@ -140,12 +138,11 @@ Now, let's add navigation to a second page that displays monkey details!
     </CollectionView.ItemTemplate>
     ```
 
-    This uses a `RelativeSource` binding, which means that it isn't binding to the `Monkey` anymore in the `DataTemplate`, but instead it is looking up the hierarchy specifically for an `AncestorType` of `MonkeysViewModel`. This allows for more advanced scenarios like this.
+    這邊使用了 `RelativeSource` 的設定，使得其資料繫結的資料來源為透過 `AncestorType` 來指定繫結階層中型態為 `MonkeysViewModel` 的資料，透過這樣的設計則可以讓 Frame 控制項的 `BindingContext` 不再繫結到原本透過 `DataTemplate` 而對應繫結到的 `Monkey` 物件，而當然也允許指定繫結到更多階層的型態指定。
 
+### 為 DetailPage 設計其 ViewModel 
 
-### ViewModel for Details
-
-1. Inside of our `ViewModel/MonkeyDetailsViewModel.cs`, we will house our logic for assigning the monkey to the view model. Let's first create a bindable property for the `Monkey`:
+1. 開啟 `ViewModel/MonkeyDetailsViewModel.cs` 檔案，來設計將猴子資料指定給 ViewModel 的程式。在這邊先來幫 `Monkey` 屬性掛上 [ObservableProperty] 來建立成一個可繫結的屬性：
 
     ```csharp
     public partial class MonkeyDetailsViewModel : BaseViewModel
@@ -157,9 +154,8 @@ Now, let's add navigation to a second page that displays monkey details!
         [ObservableProperty]
         Monkey monkey;    
     }
-    ```
 
-1. Next, we will add a `QueryProperty` to handle passing the monkey data:
+2. 接著在此 MonkeyDetailsViewModel 在掛上 `[QueryProperty]` 來處理傳遞進來的猴子資料：
 
     ```csharp
     //Add QueryProperty
@@ -174,30 +170,27 @@ Now, let's add navigation to a second page that displays monkey details!
         Monkey monkey;
     }
     ```
-    
-    
-## Registering Routing
 
-Now that we have our details page in place, we need to register it for routing. This is done in both the Shell routing system and with the .NET MAUI dependency service.
+## 註冊頁面的路由
 
-1. Open `AppShell.xaml.cs` code behind and add the following code into the constructor under the `InitializeComponent();` invoke:
+現在已經有設計了 DetailPage 以及其 ViewModel，在 `Shell` 的運作當中需要註冊其路由，這就透過 Shell 的註冊和 .NET MAUI 服務註冊完成的。
+
+1. 開啟 `AppShell.xaml.cs` 這個檔案，找到在其 AppShell 類別的建構方法當中的 `InitializeComponent();` 程式碼，並在其下加入下列程式碼：
 
     ```csharp
     Routing.RegisterRoute(nameof(DetailsPage), typeof(DetailsPage));
     ```
+    這將能讓 `DetailsPage` 這個頁面註冊為 **DetailPage** 的路由資訊。
 
-    This will register the details page with the route of "DetailsPage", which we used earlier.
-
-1. Open `MauiProgram.cs` and add both the view model and the page as `Transient` so a new page and view model is created each time it is navigated to:
+2. 開啟 `MauiProgram.cs` 並將 DetailPage 與其 ViewModel 透過 `AddTransient<T>()` 加入服務中，這將會讓每次巡覽到 DetailPage 時會建立一個新的 Page 與 ViewModel 物件：
 
     ```csharp
     builder.Services.AddTransient<MonkeyDetailsViewModel>();
     
     ```
-
 > Starting in .NET 10 you no longer need to register Pages with the dependency service for constructor injection to work. By default when we navigate to a new page it will be created an the `MonkeyDetailsViewModel` will be injected as well.
 
-1. Finally, we must inject the view model into our `DetailsPage`. Open the code behind for the page in `DetailsPage.xaml.cs` and change the constructor to the following:
+3. 最後，開啟 `DetailsPage.xaml.cs` 這個 DetailPage.xaml 所對應的後置程式碼檔案，並將 DetailPage 的建構方法改為如下內容：
 
     ```csharp
 	public DetailsPage(MonkeyDetailsViewModel viewModel)
@@ -206,15 +199,15 @@ Now that we have our details page in place, we need to register it for routing. 
 		BindingContext = viewModel;
 	}
     ```
+    這將 ViewModel 透過建構式注入到 `DetailsPage` 中。  
+    
+### 幫 DetailsPage.xaml 建立使用者介面
 
-### Create DetailsPage.xaml UI
-
-Let's add UI to the DetailsPage. Our end goal is to get a fancy profile screen like this:
+將下列變更加入到 DetailsPage 中。最終希望呈現出如下的精美介面來展示猴子的詳細資料：
 
 ![](../Art/Details.PNG)
 
-
-1. Let's first start by defining our DataType by defining the view model namespace and also setting the title:
+1. 首先透過 ViewModel 的命名空間的引用並設置 x:DataType 為期對應的 ViewModel 後，即可將 ContentPage 的 Title 設定資料繫結：
 
     ```xml
     <ContentPage
@@ -229,7 +222,7 @@ Let's add UI to the DetailsPage. Our end goal is to get a fancy profile screen l
     </ContentPage>
     ```
 
-1. At the core is a `ScrollView` and `Grid` to layout all of the controls nicely on the screen:
+2. 而在 ContentPage 的標記當中增加 `ScrollView` 和 `Grid` 的相關標記，這些搭配能呈現出不錯的畫面配置對應效果：
 
     ```xml
     <ScrollView>
@@ -243,7 +236,7 @@ Let's add UI to the DetailsPage. Our end goal is to get a fancy profile screen l
     </ScrollView>
     ```
 
-1. We can now fill in our `Grid` with the following code to place a box as the background color of yellow, and then our monkey image cut out in the shape of a circle:
+3. 接著在 `Grid` 標記當中放置其下的 XAML 標記碼：
 
     ```xml
     <BoxView
@@ -276,8 +269,11 @@ Let's add UI to the DetailsPage. Our end goal is to get a fancy profile screen l
             HorizontalOptions="Center"
             Margin="0,0,0,8"/>
     ```
+    
+    此為放置一個 BoxView 來設定背景色為黃色，並將猴子的影像調整成圓形呈現。
 
-1. Finally, under the `Label`, but still inside of the `Grid`, we'll add a `VerticalStackLayout` to provide details about the monkey.
+4. 在 `Grid` 標記的下方 (但仍在 `VerticalStackLayout` 標記的內部)，將透過 Label 來呈現有關猴子的詳細資料。
+   
 
 ```xml
 <VerticalStackLayout Grid.Row="2" Padding="10" Spacing="10">
@@ -287,7 +283,7 @@ Let's add UI to the DetailsPage. Our end goal is to get a fancy profile screen l
 </VerticalStackLayout>
 ```
 
+5. 就如同前面的 Hands-on Lab 的 Part，在要測試的架構當中來選定執行目標後，來執行應用程式。並點選 CollectionView 當中的一個項目進行頁面的巡覽轉跳！
 
-1. Run the application on the desired platform and tap on a monkey to navigate!
-
-Platform features are the next topic for us to explore.  Navigate to [Part 4](../Part%204%20-%20Platform%20Features/README.md) to begin the next module.
+平台特性是下一個 Hands-on Lab 的 Part 要進行的部分，前進到 [Hands-on Lab Part 4: 了解平台特性](../Part%204%20-%20Platform%20Features/README.zh-tw.md) 以開始下一個階段的 Hands-on Lab。
+   
