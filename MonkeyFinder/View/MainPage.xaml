@@ -8,37 +8,36 @@
     xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
     x:DataType="viewmodel:LoginViewModel"
     Title="{Binding Title}"
-    Shell.NavBarIsVisible="False">
+    Shell.NavBarIsVisible="False"
+    xmlns:views="clr-namespace:MonkeyFinder.View">
 
     <Grid RowDefinitions="*,Auto,Auto"
       RowSpacing="0"
       Background="White">
 
-        <!--<Image Source="background.jpg"
-           Aspect="AspectFill"
-           Grid.RowSpan="3"/>-->
+        <views:BackgroundView Grid.RowSpan="3" />
 
         <VerticalStackLayout Grid.Row="0"
                          Padding="30"
                          Spacing="15"
                          VerticalOptions="Start"
                          BackgroundColor="Transparent">
-
-            <Image Source="logo.png" HeightRequest="200"></Image>
+            
+            <Image Source="logo.png" HeightRequest="150"></Image>
 
             <Label Text="{Binding Title}"
-               FontSize="28"
-               FontAttributes="Bold"
-               TextColor="#FFFFFF"
-               HorizontalOptions="Center"/>
+                   FontSize="28"
+                   FontAttributes="Bold"
+                   TextColor="#FFFFFF"
+                   Margin="20 0 0 0"
+                   HorizontalOptions="Center"/>
 
             <Label Text="Accedi per continuare e sfruttare tutte le funzionalità"
                FontSize="16"
                TextColor="#FFFFFF"
                HorizontalOptions="Center"
                HorizontalTextAlignment="Center"
-               LineBreakMode="WordWrap"
-               Margin="20"/>
+               LineBreakMode="WordWrap" />
 
             <Border Style="{StaticResource TextInput}">
 
@@ -47,8 +46,16 @@
                        TextColor="Black"
                        BackgroundColor="Transparent"
                        HeightRequest="40"
-                       Text="{Binding UserName}"/>    
+                       Text="{Binding Email}"/>
             </Border>
+
+            <Label Text="{Binding EmailError}"
+                   TextColor="Red"
+                   FontSize="13"
+                   HorizontalOptions="End"
+                   Margin="-15 0 -10 0"
+                   IsVisible="{Binding NotFirstAttempt}"
+                   FontAttributes="Bold" />
 
             <Border Style="{StaticResource TextInput}">
 
@@ -57,8 +64,18 @@
                        TextColor="Black"
                        BackgroundColor="White"
                        HeightRequest="40"
+                       Visual="Default"
                        Text="{Binding Password}"/>
             </Border>
+
+            <Label 
+                Text="{Binding PasswordError}"
+                TextColor="Red"
+                HorizontalOptions="End"
+                Margin="-15 0 0 0"
+                FontSize="13"
+                IsVisible="{Binding NotFirstAttempt}"
+                FontAttributes="Bold"/>
 
             <Button Text="ENTRA" 
                     Style="{StaticResource ButtonOutline}"
