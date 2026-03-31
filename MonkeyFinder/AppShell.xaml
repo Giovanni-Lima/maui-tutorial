@@ -3,11 +3,14 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="MonkeyFinder.AppShell"
              xmlns:view="clr-namespace:MonkeyFinder.View"
-             FlyoutBehavior="Disabled">
+             FlyoutBehavior="Disabled"
+			 xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit">
 
+    <Shell.BackgroundImageSource>
+        background.jpg
+    </Shell.BackgroundImageSource>
 
-
-	<Shell.Resources>
+    <Shell.Resources>
 		<ResourceDictionary>
 			<Style TargetType="Shell" ApplyToDerivedTypes="True">
 				<Setter Property="Shell.BackgroundColor" Value="{StaticResource Primary}" />

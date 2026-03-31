@@ -6,69 +6,74 @@
     xmlns:model="clr-namespace:MonkeyFinder.Model"
     xmlns:viewmodel="clr-namespace:MonkeyFinder.ViewModel"
     xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
-    ios:Page.UseSafeArea="True"
-    x:DataType="viewmodel:MonkeysViewModel"
-    Title="{Binding Title}">
-    <Grid
-        ColumnDefinitions="*,*"
-        ColumnSpacing="5"
-        RowDefinitions="*,Auto"
-        RowSpacing="0">
-        <CollectionView
-            Grid.ColumnSpan="2"
-            ItemsSource="{Binding Monkeys}"
-            SelectionMode="None">
-            <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="model:Monkey">
-                    <Grid Padding="10">
-                        <Border HeightRequest="125" Style="{StaticResource CardView}">
-                            <Border.GestureRecognizers>
-                                <TapGestureRecognizer 
-                                    Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:MonkeysViewModel}}, x:DataType=viewmodel:MonkeysViewModel, Path=GoToDetailsCommand}"
-                                    CommandParameter="{Binding .}" />
+    x:DataType="viewmodel:LoginViewModel"
+    Title="{Binding Title}"
+    Shell.NavBarIsVisible="False">
 
+    <Grid RowDefinitions="*,Auto,Auto"
+      RowSpacing="0"
+      Background="White">
 
-                            </Border.GestureRecognizers>
-                            <Grid Padding="0" ColumnDefinitions="125,*">
-                                <Image Aspect="AspectFill" Source="{Binding Image}"
-                                       WidthRequest="125"
-                                       HeightRequest="125"/>
-                                <VerticalStackLayout
-                                    VerticalOptions="Center"
-                                    Grid.Column="1"
-                                    Padding="10">
-                                    <Label Style="{StaticResource LargeLabel}" Text="{Binding Name}" />
-                                    <Label Style="{StaticResource MediumLabel}" Text="{Binding Location}" />
-                                </VerticalStackLayout>
-                            </Grid>
-                        </Border>
-                    </Grid>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
+        <!--<Image Source="background.jpg"
+           Aspect="AspectFill"
+           Grid.RowSpan="3"/>-->
 
-        <Button Text="Get Monkeys" 
-                Command="{Binding GetMonkeysCommand}"
-                IsEnabled="{Binding IsNotBusy}"
-                Grid.Row="1"
-                Grid.Column="0"
-                Style="{StaticResource ButtonOutline}"
-                Margin="8"/>
+        <VerticalStackLayout Grid.Row="0"
+                         Padding="30"
+                         Spacing="15"
+                         VerticalOptions="Start"
+                         BackgroundColor="Transparent">
 
-        <Button Text="Find Closest" 
-                Command="{Binding GetClosestMonkeyCommand}"
-                IsEnabled="{Binding IsNotBusy}"
-                Grid.Row="1"
-                Grid.Column="1"
-                Style="{StaticResource ButtonOutline}"
-                Margin="8"/>
+            <Image Source="logo.png" HeightRequest="200"></Image>
 
-        <ActivityIndicator IsVisible="{Binding IsBusy}"
-                           IsRunning="{Binding IsBusy}"
-                           HorizontalOptions="Fill"
-                           VerticalOptions="Center"
-                           Color="{StaticResource Primary}"
-                           Grid.RowSpan="2"
-                           Grid.ColumnSpan="2"/>
+            <Label Text="{Binding Title}"
+               FontSize="28"
+               FontAttributes="Bold"
+               TextColor="#FFFFFF"
+               HorizontalOptions="Center"/>
+
+            <Label Text="Accedi per continuare e sfruttare tutte le funzionalità"
+               FontSize="16"
+               TextColor="#FFFFFF"
+               HorizontalOptions="Center"
+               HorizontalTextAlignment="Center"
+               LineBreakMode="WordWrap"
+               Margin="20"/>
+
+            <Border Style="{StaticResource TextInput}">
+
+                <Entry Placeholder="Email"
+                       Keyboard="Email"
+                       TextColor="Black"
+                       BackgroundColor="Transparent"
+                       HeightRequest="40"
+                       Text="{Binding UserName}"/>    
+            </Border>
+
+            <Border Style="{StaticResource TextInput}">
+
+                <Entry Placeholder="Password"
+                       IsPassword="True"
+                       TextColor="Black"
+                       BackgroundColor="White"
+                       HeightRequest="40"
+                       Text="{Binding Password}"/>
+            </Border>
+
+            <Button Text="ENTRA" 
+                    Style="{StaticResource ButtonOutline}"
+                    Command="{Binding LoginCommand}"/>
+            
+        </VerticalStackLayout>
+
+        <!-- Versione App -->
+        <Label Grid.Row="2"
+           Text="{StaticResource AppVersion}"
+           Padding="0 10 10 0"
+           HorizontalOptions="End"
+           VerticalOptions="End"
+           FontSize="12"
+           TextColor="White"/>
     </Grid>
+
 </ContentPage>

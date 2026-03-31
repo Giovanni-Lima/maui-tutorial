@@ -1,11 +1,11 @@
-﻿namespace MonkeyFinder.View;
-
-public partial class MainPage : ContentPage
+﻿namespace MonkeyFinder.View
 {
-	public MainPage(MonkeysViewModel viewModel)
-	{
-		InitializeComponent();
-		BindingContext = viewModel;
-	}
+    public partial class MainPage : ContentPage
+    {
+        public MainPage(LoginViewModel viewModel)
+        {
+            InitializeComponent();
+            BindingContext = viewModel;
+        }
+    }
 }
-

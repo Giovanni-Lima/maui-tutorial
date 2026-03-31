@@ -35,8 +35,8 @@ public partial class MonkeysViewModel : BaseViewModel
 
             var nearest = Monkeys
                 .OrderBy(m => location.CalculateDistance(
-                    m.Latitude, 
-                    m.Longitude, 
+                    m.Latitude,
+                    m.Longitude,
                     DistanceUnits.Kilometers))
                 .FirstOrDefault();
 
