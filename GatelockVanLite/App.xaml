@@ -27,6 +27,31 @@
                 <Setter Property="LineBreakMode" Value="WordWrap"/>
             </Style>
 
+            <Style x:Key="ButtonOutline" TargetType="Button">
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="TextColor" Value="#FFFFFF"/>
+                <Setter Property="BorderColor" Value="#FFFFFF"/>
+                <Setter Property="BorderWidth" Value="2"/>
+                <Setter Property="HeightRequest" Value="40"/>
+                <Setter Property="CornerRadius" Value="10"/>
+            </Style>
+
+            <Style x:Key="CardView" TargetType="Border">
+                <Setter Property="Stroke" Value="#DDDDDD" />
+                <Setter Property="StrokeThickness" Value="1" />
+                <Setter Property="StrokeShape" Value="RoundRectangle 10"/>
+                <Setter Property="Padding" Value="0" />
+                <Setter Property="Background" Value="{StaticResource LightBackground}" />
+            </Style>
+            
+            <Style x:Key="TextInput" TargetType="Border">
+                <Setter Property="Stroke" Value="#DDDDDD" />
+                <Setter Property="StrokeThickness" Value="1" />
+                <Setter Property="StrokeShape" Value="RoundRectangle 10"/>
+                <Setter Property="Padding" Value="10, 0, 10, 0" />
+                <Setter Property="Background" Value="{StaticResource LightBackground}" />
+            </Style>
+
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
                 <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
