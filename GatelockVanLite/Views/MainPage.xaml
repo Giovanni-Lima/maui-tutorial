@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodel="clr-namespace:GatelockVanLite.ViewModels"
+             xmlns:components="clr-namespace:GatelockVanLite.Views.Components"
+             x:Class="GatelockVanLite.Views.MainPage"
+             x:DataType="viewmodel:LoginViewModel">
+
+    <Grid RowDefinitions="*,Auto,Auto"
+              RowSpacing="0"
+              Background="White">
+
+        <components:BackgroundView Grid.RowSpan="3" />
+
+        <VerticalStackLayout Grid.Row="0"
+                 Padding="0 30"
+                 VerticalOptions="Start"
+                 BackgroundColor="Transparent">
+
+            <Image Source="logo.png" HeightRequest="170"></Image>
+
+            <Label Text="{Binding Title}"
+                   Style="{StaticResource TitleLabel}"
+                   Margin="0 0 20 0"/>
+
+            <Label Text="Accedi per continuare e sfruttare tutte le funzionalità"
+                   Style="{StaticResource InfoLabel}"
+                   Margin="0 0 20 0" />
+
+            <components:InputField 
+                Placeholder="Email"
+                Keyboard="Email"
+                Text="{Binding Email}"
+                ErrorText="{Binding EmailError}"
+                ShowError="{Binding NotFirstAttempt}" />
+
+            <components:InputField 
+                Placeholder="Password"
+                Keyboard="Password"
+                Text="{Binding Password}"
+                ErrorText="{Binding PasswordError}"
+                ShowError="{Binding NotFirstAttempt}" />
+
+            <Button Text="ENTRA" 
+                    Style="{StaticResource ButtonOutline}"
+                    Command="{Binding LoginCommand}"/>
+
+        </VerticalStackLayout>
+
+        <Label Grid.Row="2"
+           Text="{StaticResource AppVersion}"
+           Padding="0 10 10 0"
+           HorizontalOptions="End"
+           VerticalOptions="End"
+           FontSize="12"
+           TextColor="White"/>
+    </Grid>
+
+</ContentPage>
