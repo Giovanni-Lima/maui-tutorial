@@ -1,13 +1,17 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using MonkeyFinder.Services.Interfaces;
 using System.ComponentModel.DataAnnotations;
 
 namespace MonkeyFinder.ViewModel;
 
 public partial class LoginViewModel : BaseViewModel
 {
-    public LoginViewModel()
+    private readonly ITokenService _tokenService;
+
+    public LoginViewModel(ITokenService tokenService)
     {
         Title = "LOGIN";
+        _tokenService = tokenService;
     }
 
     [ObservableProperty]
@@ -50,9 +54,6 @@ public partial class LoginViewModel : BaseViewModel
         if (!Validate())
             return;
 
-        await Shell.Current.DisplayAlertAsync(
-                title: "Clicked",
-                message: $"USER: {Email} PASSWORD: {Password}",
-                cancel: "OK");
+        await _tokenService.SaveAccessTokenAsync($"USER: {Email} PASSWORD: {Password}");
     }
 }
